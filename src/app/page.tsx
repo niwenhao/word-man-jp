@@ -1,13 +1,20 @@
-'use client';
+import { Chapter } from '@/types/db-types';
+import { PrismaClient } from '@prisma/client';
+import Top from './top';
 
+const prisma = new PrismaClient();
 
+async function getChapters() {
+  const chapters = await prisma.chapter.findMany({
+    include: {
+      questions: true,
+    },
+  });
+  return chapters as Chapter[];
+}
 
-export default function Home({ chapters }: { chapters: any[]}) {
+export default async function Home() {
   return (
-    <div className="flex">
-      <div className="w-[50em] bg-blue-300 border border-black">{chapters.length}</div>
-      <div className="w-[50em] bg-blue-200 border border-black">Panel 2</div>
-      <div className="w-full bg-blue-50 border border-black">Panel 3</div>
-    </div>
+    <Top chapters={await getChapters()} />
   );
 }
