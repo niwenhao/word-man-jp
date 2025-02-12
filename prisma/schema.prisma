@@ -17,7 +17,7 @@ datasource db {
 model Chapter {
   id             Int      @id @default(autoincrement())
   name           String
-  description    String?
+  description    String
   lastUpdate     DateTime @default(now()) @updatedAt
   questions      Question[]
 }
