@@ -9,7 +9,7 @@
  */
 
 import { Chapter } from "@/types/db-types";
-import { Dialog, DialogPanel, DialogTitle, Label } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useState } from 'react';
 import ChapterEditor from "./chapter-editor";
 
@@ -23,7 +23,7 @@ export default function Chapters({ chapters }: { chapters: Chapter[] }) {
                     <div className="flex items-center justify-center min-h-screen">
                         <DialogPanel className="relative w-[40rem] bg-white shadow-lg">
                             <DialogTitle as="h3" className="text-lg font-medium text-gray-900">Add a new chapter</DialogTitle>
-                            <ChapterEditor editChapter={{name: '', description: ''}} saveChapter={(c) => { console.log(c); setDialogOpen(false); }} />
+                            <ChapterEditor editChapter={{name: '', description: ''}} saveChapter={ async (c) => { console.log(c); setDialogOpen(false); }} />
                         </DialogPanel>
                     </div>
                 </Dialog>

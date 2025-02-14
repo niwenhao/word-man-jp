@@ -1,9 +1,9 @@
 export interface Chapter {
   id: number;
   name: string;
-  description?: string;
+  description: string;
   lastUpdate: Date;
-  questions: Question[];
+  questions?: Question[];
 }
 
 export interface Question {
