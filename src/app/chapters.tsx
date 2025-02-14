@@ -10,11 +10,37 @@
 
 import { Chapter } from "@/types/db-types";
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import ChapterEditor from "./chapter-editor";
+import { addChapter, updateChapter } from "./chapter-service";
 
 export default function Chapters({ chapters }: { chapters: Chapter[] }) {
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [editedChapter, setEditedChapter] = useState<Chapter>({ id: 0, name: '', description: '', lastUpdate: new Date() });
+
+    type ChapterAction = { type: string, data: Chapter };
+
+    const [chapterList, dispatcher] = useReducer((state: Chapter[], action: ChapterAction) => {
+        switch (action.type) {
+            case 'add':
+                return [...state, action.data];
+            case 'update':
+                return state.map(c => c.id === action.data.id ? action.data : c);
+            default:
+                return state;
+        }
+    }, chapters);
+
+    const handleSaveChapter = async (c: Chapter) => {
+        if (c.id === 0) {
+            const r = await addChapter(c);
+            dispatcher({ type: 'add', data: r });
+        } else {
+            const r = await updateChapter(c);
+            dispatcher({ type: 'update', data: r });
+        }
+        setDialogOpen(false);
+    }
 
     return (
         <div className="flex">
@@ -23,19 +49,24 @@ export default function Chapters({ chapters }: { chapters: Chapter[] }) {
                     <div className="flex items-center justify-center min-h-screen">
                         <DialogPanel className="relative w-[40rem] bg-white shadow-lg">
                             <DialogTitle as="h3" className="text-lg font-medium text-gray-900">Add a new chapter</DialogTitle>
-                            <ChapterEditor editChapter={{name: '', description: ''}} saveChapter={ async (c) => { console.log(c); setDialogOpen(false); }} />
+                            <ChapterEditor editChapter={editedChapter} saveChapter={async (c) => await handleSaveChapter({...{id: 0, lastUpdate: new Date()}, ...c})} />
                         </DialogPanel>
                     </div>
                 </Dialog>
             </div>
             <div className="w-full bg-blue-50 border-block">
                 <div>
-                    <div className="flex justify-between">
-                        <p title="Add a chapter" onClick={() => setDialogOpen(true)}>ADD</p>
+                    <div className="flex justify-between mt-2 mb-2">
+                        <p title="Add a chapter" onClick={() => setDialogOpen(true)} className=" text-black-800 hover:text-red-800 inline">ADD</p>
                     </div>
-                    {chapters.map((chapter) => (
-                        <div key={chapter.id} className="flex justify-between">
-                            <p title={chapter.description}>{chapter.name}</p>
+                    {chapterList.map((chapter) => (
+                        <div key={chapter.id} className="flex justify-between mt-2 mb-2">
+                            <p title={chapter.description} className=" text-black-800 hover:text-red-800 inline">{chapter.name} </p>
+                            <p className="inline w-5 text-2xl bg-yellow-200 hover:bg-blue-200 handle-pointer"
+                               onClick={() => {
+                                      setEditedChapter(chapter);
+                                      setDialogOpen(true);
+                               }}>✍</p>
                         </div>
                     ))}
                 </div>

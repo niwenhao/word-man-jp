@@ -1,9 +1,9 @@
+import { Chapter } from '@/types/db-types';
 import React, { useState } from 'react';
 
-type EditedChapter = { name: string, description: string };
 export type ChapterEditorProps = {
-    editChapter: EditedChapter;
-    saveChapter: (c: EditedChapter) => Promise<void>;
+    editChapter: Chapter;
+    saveChapter: (c: Chapter) => Promise<void>;
 };
 
 const ChapterEditor = ({ editChapter, saveChapter }: ChapterEditorProps) => {

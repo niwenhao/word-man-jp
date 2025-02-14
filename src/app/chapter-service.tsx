@@ -13,3 +13,13 @@ export async function addChapter(chapter: Chapter): Promise<Chapter> {
         },
     });
 }
+
+export async function updateChapter(chapter: Chapter): Promise<Chapter> {
+    return await prisma.chapter.update({
+        where: { id: chapter.id },
+        data: {
+            name: chapter.name,
+            description: chapter.description
+        },
+    });
+}
