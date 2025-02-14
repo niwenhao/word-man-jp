@@ -25,7 +25,6 @@ model Chapter {
 model Question {
   id                 Int      @id @default(autoincrement())
   question           String
-  questionPronounced String
   answer             String
   chapterId          Int
   chapter            Chapter  @relation(fields: [chapterId], references: [id])

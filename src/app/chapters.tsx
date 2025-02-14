@@ -57,7 +57,10 @@ export default function Chapters({ chapters }: { chapters: Chapter[] }) {
             <div className="w-full bg-blue-50 border-block">
                 <div>
                     <div className="flex justify-between mt-2 mb-2">
-                        <p title="Add a chapter" onClick={() => setDialogOpen(true)} className=" text-black-800 hover:text-red-800 inline">ADD</p>
+                        <p title="Add a chapter" onClick={() => {
+                                setEditedChapter({ id: 0, name: '', description: '', lastUpdate: new Date(), questions: [] });
+                                setDialogOpen(true)
+                            }} className=" text-black-800 hover:text-red-800 inline">ADD</p>
                     </div>
                     {chapterList.map((chapter) => (
                         <div key={chapter.id} className="flex justify-between mt-2 mb-2">
