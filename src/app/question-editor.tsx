@@ -18,10 +18,10 @@
  */
 
 import { Question } from "@/types/db-types";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import JapaneseShow from "./japanese-show";
 
-type QuestionJson {
+type QuestionJson = {
     question_origin?: string;
     question: string;
     answer: string;
@@ -44,8 +44,13 @@ export default function QuestionEditor(props: QuestionEditorProps) {
 
     const handleJsonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setJsonInput(e.target.value);
-        const {question_origin, ...editedQuestion} = JSON.parse(e.target.value);
-        setQuestion({ ...question, ...editedQuestion });
+
+        try {
+            const q = JSON.parse(e.target.value) as QuestionJson;
+            setQuestion({ ...question, ...q });
+        } catch (error) {
+            console.error("Failed to parse JSON:", error);
+        }
     }
 
     return (
@@ -54,7 +59,7 @@ export default function QuestionEditor(props: QuestionEditorProps) {
                 rows={10}
                 cols={50}
                 value={jsonInput}
-                onChange={(e) => setJsonInput(e.target.value)}
+                onChange={handleJsonChange}
             />
             <div>
                 <h3>Question:</h3>

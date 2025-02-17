@@ -5,14 +5,14 @@ interface JapaneseShowProps {
     rubyStyle: string;
 }
 
-type ShowPart {
+type ShowPart = {
     text: string;
     ruby: string;
 }
 export default function JapaneseShow(props: JapaneseShowProps) {
     const parseContent = (content: string): ShowPart[] => {
         const regex = /\{([^\|]+)\|([^\}]+)\}/g;
-        let result: ShowPart[] = [];
+        const result: ShowPart[] = [];
         let lastIndex = 0;
         let match;
 

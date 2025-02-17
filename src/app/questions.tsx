@@ -30,7 +30,7 @@ const dispatchQuestionAction = (state: Question[], action: { type: string, data:
 
 export default function Questions({ chapter }: QuestionsProps) {
     // Local state for questions and editor visibility
-    const [questions, dispatch] = useReducer(dispatchQuestionAction, chapter.questions);
+    const [questions, dispatch] = useReducer(dispatchQuestionAction, chapter.questions || []);
     const [editing, setEditing] = useState(false);
 
     const newQuestionTemplate = () => ({
@@ -43,7 +43,7 @@ export default function Questions({ chapter }: QuestionsProps) {
 
     const [editingQuestion, setEditingQuestion] = useState(newQuestionTemplate());
 
-    const saveQuestionHandler = (q: typeof newQuestionTemplate) => {
+    const saveQuestionHandler = async (q: Question) => {
         dispatch({ type: "add", data: q });
         setEditing(false);
     };
@@ -55,7 +55,10 @@ export default function Questions({ chapter }: QuestionsProps) {
                 &lt;ADD&gt;
             </li>
             {questions.map((q, index) => (
-                <li key={index}>
+                <li key={index} onClick={() => {
+                    setEditingQuestion(q);
+                    setEditing(true);
+                }}>
                 {/* Render question details - customize as needed */}
                 {q.question.replaceAll(/\{[^\}]+\|[^\}]+\}/g, "")}
                 </li>
@@ -65,7 +68,7 @@ export default function Questions({ chapter }: QuestionsProps) {
             <div className="flex items-center justify-center min-h-screen">
                 <div className="relative bg-white rounded max-w-sm mx-auto p-6">
                 <DialogTitle className="text-lg font-bold">Edit Question</DialogTitle>
-                <QuestionEditor question={editingQuestion} saveQuestion={async () => setEditing(false)} />
+                <QuestionEditor question={editingQuestion} saveQuestion={saveQuestionHandler} />
                 </div>
             </div>
             </Dialog>
