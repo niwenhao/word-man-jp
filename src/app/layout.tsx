@@ -15,8 +15,8 @@ export default async function RootLayout({
   return (
     <html lang="ja">
       <body className="antialiased">
-        <p><Link href={"/help.pdf"} target="help">利用方法</Link></p>
-        <div>
+        <div className="w-full h-screen text-left">
+          <p><Link href={"/help.pdf"} target="help">利用方法</Link></p>
           { children }
         </div>
       </body>

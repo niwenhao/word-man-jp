@@ -11,5 +11,5 @@ export interface Question {
   question: string;
   answer: string;
   chapterId: number;
-  chapter: Chapter;
+  chapter?: Chapter;
 }

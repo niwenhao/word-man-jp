@@ -1,6 +1,6 @@
 'use server';
 
-import { Chapter } from "@/types/db-types";
+import { Chapter, Question } from "@/types/db-types";
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -20,6 +20,27 @@ export async function updateChapter(chapter: Chapter): Promise<Chapter> {
         data: {
             name: chapter.name,
             description: chapter.description
+        },
+    });
+}
+
+export async function addQuestion(question: Question): Promise<Question> {
+    const q = await prisma.question.create({
+        data: {
+            question: question.question,
+            answer: question.answer,
+            chapterId: question.chapterId
+        },
+    });
+    return { ...q, chapter: question.chapter };
+}
+
+export async function updateQuestion(question: Question): Promise<Question> {
+    return await prisma.question.update({
+        where: { id: question.id },
+        data: {
+            question: question.question,
+            answer: question.answer
         },
     });
 }

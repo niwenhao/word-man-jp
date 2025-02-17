@@ -14,7 +14,12 @@ import { useReducer, useState } from 'react';
 import ChapterEditor from "./chapter-editor";
 import { addChapter, updateChapter } from "./chapter-service";
 
-export default function Chapters({ chapters }: { chapters: Chapter[] }) {
+interface ChaptersProps {
+    chapters: Chapter[];
+    onChapterSelected?: (chapter: Chapter) => void;
+}
+
+export default function Chapters(props: ChaptersProps) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editedChapter, setEditedChapter] = useState<Chapter>({ id: 0, name: '', description: '', lastUpdate: new Date() });
 
@@ -29,10 +34,10 @@ export default function Chapters({ chapters }: { chapters: Chapter[] }) {
             default:
                 return state;
         }
-    }, chapters);
+    }, props.chapters);
 
     const handleSaveChapter = async (c: Chapter) => {
-        if (c.id === 0) {
+        if (c.id <= 0) {
             const r = await addChapter(c);
             dispatcher({ type: 'add', data: r });
         } else {
@@ -43,8 +48,8 @@ export default function Chapters({ chapters }: { chapters: Chapter[] }) {
     }
 
     return (
-        <div className="flex">
-            <div className="w-[40rem] bg-blue-200 border-block">
+        <div>
+            <div className="w-100 bg-blue-200 border-block">
                 <Dialog as="div" open={dialogOpen} className="fixed inset-0 z-10 overflow-y-auto" onClose={() => { setDialogOpen(false) }}>
                     <div className="flex items-center justify-center min-h-screen">
                         <DialogPanel className="relative w-[40rem] bg-white shadow-lg">
@@ -64,7 +69,7 @@ export default function Chapters({ chapters }: { chapters: Chapter[] }) {
                     </div>
                     {chapterList.map((chapter) => (
                         <div key={chapter.id} className="flex justify-between mt-2 mb-2">
-                            <p title={chapter.description} className=" text-black-800 hover:text-red-800 inline">{chapter.name} </p>
+                            <p title={chapter.description} className=" text-black-800 hover:text-red-800 inline" onClick={() => props.onChapterSelected?.(chapter)}>{chapter.name} </p>
                             <p className="inline w-5 text-2xl bg-yellow-200 hover:bg-blue-200 handle-pointer"
                                onClick={() => {
                                       setEditedChapter(chapter);

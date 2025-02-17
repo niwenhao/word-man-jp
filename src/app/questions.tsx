@@ -14,9 +14,11 @@ import React, { useReducer, useState } from "react";
 import { Chapter, Question } from "@/types/db-types";
 import QuestionEditor from "./question-editor";
 import { Dialog, DialogTitle } from "@headlessui/react";
+import { addQuestion } from "./chapter-service";
 
 interface QuestionsProps {
     chapter: Chapter;
+    onQuestionSelected?: (question: Question) => void;
 }
 
 const dispatchQuestionAction = (state: Question[], action: { type: string, data: Question }) => {
@@ -44,7 +46,8 @@ export default function Questions({ chapter }: QuestionsProps) {
     const [editingQuestion, setEditingQuestion] = useState(newQuestionTemplate());
 
     const saveQuestionHandler = async (q: Question) => {
-        dispatch({ type: "add", data: q });
+        const question = await addQuestion(q);
+        dispatch({ type: "add", data: question });
         setEditing(false);
     };
 
