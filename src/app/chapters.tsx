@@ -8,24 +8,25 @@
  * The first item is fixed to `<ADD>`, When click it, a new chapter is added to the list with a dialog.
  */
 
-import { Chapter } from "@/types/db-types";
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useReducer, useState } from 'react';
 import ChapterEditor from "./chapter-editor";
-import { addChapter, updateChapter } from "./chapter-service";
+import { addChapter, updateChapter } from "./background-service";
+import { ChapterWithQuestions } from '@/types/model-type';
 
 interface ChaptersProps {
-    chapters: Chapter[];
-    onChapterSelected?: (chapter: Chapter) => void;
+    chapters: ChapterWithQuestions[];
+    onChapterSelected?: (chapter: ChapterWithQuestions) => void;
 }
 
 export default function Chapters(props: ChaptersProps) {
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editedChapter, setEditedChapter] = useState<Chapter>({ id: 0, name: '', description: '', lastUpdate: new Date() });
+    const [editedChapter, setEditedChapter] = useState<ChapterWithQuestions>({ 
+        id: 0, name: '', description: '', lastUpdate: new Date(), questions: [] });
 
-    type ChapterAction = { type: string, data: Chapter };
+    type ChapterAction = { type: string, data: ChapterWithQuestions };
 
-    const [chapterList, dispatcher] = useReducer((state: Chapter[], action: ChapterAction) => {
+    const [chapterList, dispatcher] = useReducer((state: ChapterWithQuestions[], action: ChapterAction) => {
         switch (action.type) {
             case 'add':
                 return [...state, action.data];
@@ -36,7 +37,7 @@ export default function Chapters(props: ChaptersProps) {
         }
     }, props.chapters);
 
-    const handleSaveChapter = async (c: Chapter) => {
+    const handleSaveChapter = async (c: ChapterWithQuestions) => {
         if (c.id <= 0) {
             const r = await addChapter(c);
             dispatcher({ type: 'add', data: r });

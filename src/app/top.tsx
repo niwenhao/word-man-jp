@@ -1,16 +1,21 @@
 'use client';
 
-import { Chapter, Question } from "@/types/db-types";
 import Chapters from "./chapters";
 
 import { useState } from 'react';
 import Questions from "./questions";
+import { ChapterWithQuestions, Question } from "@/types/model-type";
 
-export default function Top({ chapters}: { chapters: Chapter[]}) {
+interface TopProps {
+  chapters: ChapterWithQuestions[];
+}
 
-  const [selectedChapter, setSelectedChapter] = useState<Chapter|undefined>();
 
-  const handleChapterSelected = (chapter: Chapter) => {
+export default function Top(props: TopProps) {
+
+  const [selectedChapter, setSelectedChapter] = useState<ChapterWithQuestions|undefined>();
+
+  const handleChapterSelected = (chapter: ChapterWithQuestions) => {
     setSelectedChapter(chapter);
   };
 
@@ -22,7 +27,7 @@ export default function Top({ chapters}: { chapters: Chapter[]}) {
     <div className="flex w-full h-full relative">
       <div className="relate left-0 w-[30rem] bg-blue-200 p-2">
         <p className="w-full text-center">章</p>
-        <Chapters chapters={chapters} onChapterSelected={handleChapterSelected}/>
+        <Chapters chapters={props.chapters} onChapterSelected={handleChapterSelected}/>
       </div>
       <div className="relate w-[40rem] bg-blue-100 p-2">
         <p className="w-full text-center">問題</p>

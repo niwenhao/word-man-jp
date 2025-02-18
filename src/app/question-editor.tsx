@@ -17,9 +17,9 @@
  * @param saveQuestion The function to call when the question is saved.
  */
 
-import { Question } from "@/types/db-types";
 import React, { useState } from "react";
 import JapaneseShow from "./japanese-show";
+import { Question } from "@/types/model-type";
 
 type QuestionJson = {
     question_origin?: string;

@@ -1,7 +1,0 @@
--- CreateTable
-CREATE TABLE "Chapter" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "description" TEXT,
-    "lastUpdate" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);

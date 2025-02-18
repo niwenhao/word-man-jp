@@ -11,17 +11,18 @@
  */
 
 import React, { useReducer, useState } from "react";
-import { Chapter, Question } from "@/types/db-types";
 import QuestionEditor from "./question-editor";
 import { Dialog, DialogTitle } from "@headlessui/react";
-import { addQuestion } from "./chapter-service";
+import { addQuestion } from "./background-service";
+import { ChapterWithQuestions, Question } from "@/types/model-type";
+
 
 interface QuestionsProps {
-    chapter: Chapter;
+    chapter: ChapterWithQuestions;
     onQuestionSelected?: (question: Question) => void;
 }
 
-const dispatchQuestionAction = (state: Question[], action: { type: string, data: Question }) => {
+const dispatchQuestionAction = (state: Question[], action: { type: string, data: Question}) => {
     switch (action.type) {
         case "add":
             return [...state, action.data];
@@ -40,7 +41,6 @@ export default function Questions({ chapter }: QuestionsProps) {
         question: "",
         answer: "",
         chapterId: chapter.id,
-        chapter: chapter
     } as Question);
 
     const [editingQuestion, setEditingQuestion] = useState(newQuestionTemplate());
