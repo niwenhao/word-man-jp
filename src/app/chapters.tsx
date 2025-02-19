@@ -70,7 +70,11 @@ export default function Chapters(props: ChaptersProps) {
                     </div>
                     {chapterList.map((chapter) => (
                         <div key={chapter.id} className="flex justify-between mt-2 mb-2">
-                            <p title={chapter.description} className=" text-black-800 hover:text-red-800 inline" onClick={() => props.onChapterSelected?.(chapter)}>{chapter.name} </p>
+                            <p title={chapter.description} className=" text-black-800 hover:text-red-800 inline" onClick={() => { 
+                                console.log(chapter);
+                                console.log(props.onChapterSelected);
+                                props.onChapterSelected?.(chapter)
+                            }}>{chapter.name}</p>
                             <p className="inline w-5 text-2xl bg-yellow-200 hover:bg-blue-200 handle-pointer"
                                onClick={() => {
                                       setEditedChapter(chapter);

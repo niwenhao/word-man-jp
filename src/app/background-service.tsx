@@ -11,11 +11,12 @@ export async function getChapters() {
 }
 
 export async function getQuestions(chapterId: number) {
-    return await prisma.question.findMany({
+    const questions = await prisma.question.findMany({
         where: {
             chapterId: chapterId
         }
     });
+    return questions;
 }
 
 export async function addChapter(chapter: Chapter) {

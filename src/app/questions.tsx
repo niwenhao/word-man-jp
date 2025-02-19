@@ -12,7 +12,7 @@
 
 import React, { useEffect, useReducer, useState } from "react";
 import QuestionEditor from "./question-editor";
-import { Dialog, DialogTitle } from "@headlessui/react";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { addQuestion, getQuestions } from "./background-service";
 import { Chapter, Question } from "@/types/model-type";
 
@@ -22,32 +22,23 @@ interface QuestionsProps {
     onQuestionSelected?: (question: Question) => void;
 }
 
-type Action = { type: "add", data: Question } | { type: "initialize", data: Question[] } | { type: "update", data: Question };
+type Action = { type: "add", question: Question } | { type: "initialize", questions: Question[] } | { type: "update", question: Question };
 
 
 const questionsReducer = (state: Question[], action: Action) => {
     switch (action.type) {
         case "add":
-            return [...state, action.data];
+            return [...state, action.question];
         case "initialize":
-            return action.data;
+            return action.questions;
         default:
             return state;
     }
 };
 
-export default function Questions({ chapter }: QuestionsProps) {
-    // Local state for questions and editor visibility
-    const [questions, dispatch] = useReducer(questionsReducer, []);
-    const [editing, setEditing] = useState(false);
 
-    useEffect(() => {
-        const fetchQuestions = async () => {
-            const questions = await getQuestions(chapter.id);
-            dispatch({ type: "initialize", data: questions });
-        };
-        fetchQuestions();
-    }, [chapter]);
+
+export default function Questions({ chapter, onQuestionSelected }: QuestionsProps) {
 
     const newQuestionTemplate = () => ({
         id: -1,
@@ -56,12 +47,32 @@ export default function Questions({ chapter }: QuestionsProps) {
         chapterId: chapter.id,
     } as Question);
 
+    const [questions, dispatch] = useReducer(questionsReducer, []);
+    const [editing, setEditing] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(newQuestionTemplate());
+    const [index, setIndex] = useState(-1);
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            const questions = await getQuestions(chapter.id);
+            dispatch({ type: "initialize", questions: questions });
+        };
+        fetchQuestions();
+        setEditingQuestion(newQuestionTemplate());
+    }, [chapter]);
 
     const saveQuestionHandler = async (q: Question) => {
         const question = await addQuestion(q);
-        dispatch({ type: "add", data: question });
+        dispatch({ type: "add", question: question });
         setEditing(false);
+    };
+
+    const selectQuestionHandler = (q: Question, i: number) => {
+        setIndex(i);
+
+        if (onQuestionSelected) {
+            onQuestionSelected(q);
+        }
     };
 
     return (
@@ -70,22 +81,33 @@ export default function Questions({ chapter }: QuestionsProps) {
             <li onClick={() => setEditing(true)} style={{ cursor: "pointer", fontWeight: "bold" }}>
                 &lt;ADD&gt;
             </li>
-            {questions.map((q, index) => (
-                <li key={index} onClick={() => {
-                    setEditingQuestion(q);
-                    setEditing(true);
-                }}>
-                {/* Render question details - customize as needed */}
-                {q.question.replaceAll(/\{[^\}]+\|[^\}]+\}/g, "")}
-                </li>
-            ))}
-            </ul>
+            {questions.map((q, i) => {
+                let style = "w-full p-2 hover:bg-cyan-50";
+                if (i === index) {
+                    style = "w-full p-2 hover:bg-cyan-50 bg-cyan-50";
+                }
+                return (
+                    <li key={i} className="my-2">
+                        <div className="flex justify-between h-10 m-0">
+                            <p className={style} onClick={() => selectQuestionHandler(q, i)}>{q.question.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</p>
+                            <p className="p-2 w-9 bg-yellow-400 hover:bg-blue-200"
+                                    onClick={() => {
+                                            setEditingQuestion(q);
+                                            setEditing(true);
+                                    }}>ED</p>
+                        </div>
+                    </li>
+                )
+            })}
+                </ul>
             <Dialog open={editing} onClose={() => setEditing(false)} className="fixed inset-0 z-10 overflow-y-auto">
             <div className="flex items-center justify-center min-h-screen">
+                <DialogPanel className="relative w-[40rem] bg-white shadow-lg">
                 <div className="relative bg-white rounded max-w-sm mx-auto p-6">
                 <DialogTitle className="text-lg font-bold">Edit Question</DialogTitle>
                 <QuestionEditor question={editingQuestion} saveQuestion={saveQuestionHandler} />
                 </div>
+                </DialogPanel>
             </div>
             </Dialog>
         </div>
