@@ -10,22 +10,27 @@
  * 
  */
 
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import QuestionEditor from "./question-editor";
 import { Dialog, DialogTitle } from "@headlessui/react";
-import { addQuestion } from "./background-service";
-import { ChapterWithQuestions, Question } from "@/types/model-type";
+import { addQuestion, getQuestions } from "./background-service";
+import { Chapter, Question } from "@/types/model-type";
 
 
 interface QuestionsProps {
-    chapter: ChapterWithQuestions;
+    chapter: Chapter;
     onQuestionSelected?: (question: Question) => void;
 }
 
-const dispatchQuestionAction = (state: Question[], action: { type: string, data: Question}) => {
+type Action = { type: "add", data: Question } | { type: "initialize", data: Question[] } | { type: "update", data: Question };
+
+
+const questionsReducer = (state: Question[], action: Action) => {
     switch (action.type) {
         case "add":
             return [...state, action.data];
+        case "initialize":
+            return action.data;
         default:
             return state;
     }
@@ -33,8 +38,16 @@ const dispatchQuestionAction = (state: Question[], action: { type: string, data:
 
 export default function Questions({ chapter }: QuestionsProps) {
     // Local state for questions and editor visibility
-    const [questions, dispatch] = useReducer(dispatchQuestionAction, chapter.questions || []);
+    const [questions, dispatch] = useReducer(questionsReducer, []);
     const [editing, setEditing] = useState(false);
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            const questions = await getQuestions(chapter.id);
+            dispatch({ type: "initialize", data: questions });
+        };
+        fetchQuestions();
+    }, [chapter]);
 
     const newQuestionTemplate = () => ({
         id: -1,

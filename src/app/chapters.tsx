@@ -12,21 +12,21 @@ import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useReducer, useState } from 'react';
 import ChapterEditor from "./chapter-editor";
 import { addChapter, updateChapter } from "./background-service";
-import { ChapterWithQuestions } from '@/types/model-type';
+import { Chapter } from '@/types/model-type';
 
 interface ChaptersProps {
-    chapters: ChapterWithQuestions[];
-    onChapterSelected?: (chapter: ChapterWithQuestions) => void;
+    chapters: Chapter[];
+    onChapterSelected?: (chapter: Chapter) => void;
 }
 
 export default function Chapters(props: ChaptersProps) {
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editedChapter, setEditedChapter] = useState<ChapterWithQuestions>({ 
-        id: 0, name: '', description: '', lastUpdate: new Date(), questions: [] });
+    const [editedChapter, setEditedChapter] = useState<Chapter>({ 
+        id: 0, name: '', description: '', lastUpdate: new Date() });
 
-    type ChapterAction = { type: string, data: ChapterWithQuestions };
+    type ChapterAction = { type: string, data: Chapter};
 
-    const [chapterList, dispatcher] = useReducer((state: ChapterWithQuestions[], action: ChapterAction) => {
+    const [chapterList, dispatcher] = useReducer((state: Chapter[], action: ChapterAction) => {
         switch (action.type) {
             case 'add':
                 return [...state, action.data];
@@ -37,7 +37,7 @@ export default function Chapters(props: ChaptersProps) {
         }
     }, props.chapters);
 
-    const handleSaveChapter = async (c: ChapterWithQuestions) => {
+    const handleSaveChapter = async (c: Chapter) => {
         if (c.id <= 0) {
             const r = await addChapter(c);
             dispatcher({ type: 'add', data: r });
@@ -64,7 +64,7 @@ export default function Chapters(props: ChaptersProps) {
                 <div>
                     <div className="flex justify-between mt-2 mb-2">
                         <p title="Add a chapter" onClick={() => {
-                                setEditedChapter({ id: 0, name: '', description: '', lastUpdate: new Date(), questions: [] });
+                                setEditedChapter({ id: 0, name: '', description: '', lastUpdate: new Date() });
                                 setDialogOpen(true)
                             }} className=" text-black-800 hover:text-red-800 inline">ADD</p>
                     </div>

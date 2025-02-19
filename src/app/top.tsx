@@ -4,18 +4,18 @@ import Chapters from "./chapters";
 
 import { useState } from 'react';
 import Questions from "./questions";
-import { ChapterWithQuestions, Question } from "@/types/model-type";
+import { Chapter, Question } from "@/types/model-type";
 
 interface TopProps {
-  chapters: ChapterWithQuestions[];
+  chapters: Chapter[];
 }
 
 
 export default function Top(props: TopProps) {
 
-  const [selectedChapter, setSelectedChapter] = useState<ChapterWithQuestions|undefined>();
+  const [selectedChapter, setSelectedChapter] = useState<Chapter|undefined>();
 
-  const handleChapterSelected = (chapter: ChapterWithQuestions) => {
+  const handleChapterSelected = (chapter: Chapter) => {
     setSelectedChapter(chapter);
   };
 

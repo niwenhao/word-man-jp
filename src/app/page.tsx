@@ -1,15 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import Top from './top';
-
-const prisma = new PrismaClient();
-
-async function getChapters() {
-  return await prisma.chapter.findMany({
-    include: {
-      questions: true,
-    },
-  });
-}
+import { getChapters } from './background-service';
 
 export default async function Home() {
   return (
