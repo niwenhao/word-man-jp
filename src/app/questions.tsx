@@ -13,13 +13,15 @@
 import React, { useEffect, useReducer, useState } from "react";
 import QuestionEditor from "./question-editor";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { addQuestion, getQuestions } from "./background-service";
+import { addQuestion, updateQuestion } from "./background-service";
 import { Chapter, Question } from "@/types/model-type";
 
 
 interface QuestionsProps {
     chapter: Chapter;
-    onQuestionSelected?: (question: Question) => void;
+    questions: Question[];
+    selectedIndex: number;
+    onQuestionSelected: (question: Question) => void;
 }
 
 type Action = { type: "add", question: Question } | { type: "initialize", questions: Question[] } | { type: "update", question: Question };
@@ -31,6 +33,8 @@ const questionsReducer = (state: Question[], action: Action) => {
             return [...state, action.question];
         case "initialize":
             return action.questions;
+        case "update":
+            return state.map(q => q.id === action.question.id ? action.question : q);
         default:
             return state;
     }
@@ -38,47 +42,52 @@ const questionsReducer = (state: Question[], action: Action) => {
 
 
 
-export default function Questions({ chapter, onQuestionSelected }: QuestionsProps) {
+export default function Questions(props: QuestionsProps) {
 
     const newQuestionTemplate = () => ({
         id: -1,
         question: "",
         answer: "",
-        chapterId: chapter.id,
+        chapterId: props.chapter.id,
     } as Question);
 
     const [questions, dispatch] = useReducer(questionsReducer, []);
-    const [editing, setEditing] = useState(false);
-    const [editingQuestion, setEditingQuestion] = useState(newQuestionTemplate());
-    const [index, setIndex] = useState(-1);
-
-    useEffect(() => {
-        const fetchQuestions = async () => {
-            const questions = await getQuestions(chapter.id);
-            dispatch({ type: "initialize", questions: questions });
-        };
-        fetchQuestions();
-        setEditingQuestion(newQuestionTemplate());
-    }, [chapter]);
+    const [editingQuestion, setEditingQuestion] = useState<Question|undefined>();
+    const [index, setIndex] = useState(props.selectedIndex);
 
     const saveQuestionHandler = async (q: Question) => {
-        const question = await addQuestion(q);
-        dispatch({ type: "add", question: question });
-        setEditing(false);
+        if (q.id > 0) {
+            // update
+            const question = await updateQuestion(q);
+            dispatch({ type: "update", question: question });
+            setEditingQuestion(undefined);
+        } else {
+            // add
+            const question = await addQuestion(q);
+            dispatch({ type: "add", question: question });
+            setEditingQuestion(undefined);
+        }
     };
 
     const selectQuestionHandler = (q: Question, i: number) => {
         setIndex(i);
 
-        if (onQuestionSelected) {
-            onQuestionSelected(q);
-        }
+        props.onQuestionSelected(q);
     };
+
+    useEffect(() => {
+        dispatch({ type: "initialize", questions: props.questions });
+    }, [props.questions]);
+
+    useEffect(() => {
+        console.log("selectedIndex => ", props.selectedIndex);
+        setIndex(props.selectedIndex);
+    }, [props.selectedIndex]);
 
     return (
         <div>
             <ul>
-            <li onClick={() => setEditing(true)} style={{ cursor: "pointer", fontWeight: "bold" }}>
+            <li onClick={() => setEditingQuestion(newQuestionTemplate())} style={{ cursor: "pointer", fontWeight: "bold" }}>
                 &lt;ADD&gt;
             </li>
             {questions.map((q, i) => {
@@ -93,19 +102,18 @@ export default function Questions({ chapter, onQuestionSelected }: QuestionsProp
                             <p className="p-2 w-9 bg-yellow-400 hover:bg-blue-200"
                                     onClick={() => {
                                             setEditingQuestion(q);
-                                            setEditing(true);
                                     }}>ED</p>
                         </div>
                     </li>
                 )
             })}
                 </ul>
-            <Dialog open={editing} onClose={() => setEditing(false)} className="fixed inset-0 z-10 overflow-y-auto">
+            <Dialog open={editingQuestion !== undefined} onClose={() => setEditingQuestion(undefined)} className="fixed inset-0 z-10 overflow-y-auto">
             <div className="flex items-center justify-center min-h-screen">
                 <DialogPanel className="relative w-[40rem] bg-white shadow-lg">
                 <div className="relative bg-white rounded max-w-sm mx-auto p-6">
                 <DialogTitle className="text-lg font-bold">Edit Question</DialogTitle>
-                <QuestionEditor question={editingQuestion} saveQuestion={saveQuestionHandler} />
+                { editingQuestion && <QuestionEditor question={editingQuestion} saveQuestion={saveQuestionHandler} /> }
                 </div>
                 </DialogPanel>
             </div>

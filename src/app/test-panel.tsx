@@ -17,23 +17,24 @@ export default function TestPanel({question, moveNext}: TestPanelProps) {
 
     const displayQuestion = () => {
         if (displayMode === 1) {
-            return <div>{question.question.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</div>;
+            return <div className="h-40">{question.question.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</div>;
         } else {
-            return <div><JapaneseShow content={question.question} textStyle={textStyle} rubyStyle={rubyStyle}/></div>;
+            return <div className="h-40"><JapaneseShow content={question.question} textStyle={textStyle} rubyStyle={rubyStyle}/></div>;
         }
     }
     
     const displayAnswer = () => {
         if (displayMode === 3) {
-            return <div>{question.answer.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</div>;
+            return <div className="h-40">{question.answer.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</div>;
         } else if (displayMode === 4) {
-            return <div><JapaneseShow content={question.answer} textStyle={textStyle} rubyStyle={rubyStyle}/></div>;
+            return <div className="h-40"><JapaneseShow content={question.answer} textStyle={textStyle} rubyStyle={rubyStyle}/></div>;
         } else {
-            return <div></div>;
+            return <div className="h-40"></div>;
         }
     }
 
     useEffect(() => {
+        console.log("TestPanel => useEffect", question);
         setDisplayMode(1);
     }, [question]);
 
