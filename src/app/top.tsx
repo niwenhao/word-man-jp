@@ -44,11 +44,11 @@ export default function Top(props: TopProps) {
 
   return (
     <div className="flex w-full h-full relative">
-      <div className="relate left-0 w-[30rem] bg-blue-200 p-2">
+      <div className="relate left-0 w-[30rem] bg-blue-50 p-2">
         <p className="w-full text-center">章</p>
         <Chapters chapters={props.chapters} onChapterSelected={handleChapterSelected}/>
       </div>
-      <div className="relate w-[40rem] bg-blue-100 p-2">
+      <div className="relate w-[40rem] bg-blue-50 p-2">
         <p className="w-full text-center">問題</p>
         { selectedChapter && <Questions chapter={selectedChapter} questions={questions} selectedIndex={selectedIndex} onQuestionSelected={handleQuestionSelected}/> }
       </div>

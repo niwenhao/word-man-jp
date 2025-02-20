@@ -20,11 +20,11 @@ const ChapterEditor = ({ editChapter, saveChapter }: ChapterEditorProps) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className='bg-blue-100 w-[40rem]'>
+        <form onSubmit={handleSubmit} className='flex flex-col p-4'>
+            <div className='bg-blue-100 w-full'>
                 <label htmlFor="name">Name:</label>
                 <input
-                    className='border-black w-full'
+                    className='w-full'
                     type="text"
                     id="name"
                     name="name"
@@ -32,7 +32,7 @@ const ChapterEditor = ({ editChapter, saveChapter }: ChapterEditorProps) => {
                     onChange={handleInputChange}
                 />
             </div>
-            <div className='bg-blue-100 w-[40rem]'>
+            <div className='bg-blue-100 w-full'>
                 <label htmlFor="description">Description:</label>
                 <textarea
                     className='border-black w-full h-[10rem]'
@@ -42,7 +42,7 @@ const ChapterEditor = ({ editChapter, saveChapter }: ChapterEditorProps) => {
                     onChange={handleInputChange}
                 />
             </div>
-            <div className='bg-white w-[40rem] flex justify-center'>
+            <div className='bg-white w-full flex justify-center'>
             <button type="submit"
                     className='w-50 bg-blue-500 text-white hover:bg-blue-400 p-2 rounded m-4'
                     >Save Chapter</button>

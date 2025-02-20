@@ -53,7 +53,7 @@ export default function Chapters(props: ChaptersProps) {
             <div className="w-100 bg-blue-200 border-block">
                 <Dialog as="div" open={dialogOpen} className="fixed inset-0 z-10 overflow-y-auto" onClose={() => { setDialogOpen(false) }}>
                     <div className="flex items-center justify-center min-h-screen">
-                        <DialogPanel className="relative w-[40rem] bg-white shadow-lg">
+                        <DialogPanel className="relative w-[40rem] bg-green-100 shadow-lg">
                             <DialogTitle as="h3" className="text-lg font-medium text-gray-900">Add a new chapter</DialogTitle>
                             <ChapterEditor editChapter={editedChapter} saveChapter={async (c) => await handleSaveChapter({...{id: 0, lastUpdate: new Date()}, ...c})} />
                         </DialogPanel>
