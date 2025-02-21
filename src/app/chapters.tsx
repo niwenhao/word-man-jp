@@ -73,7 +73,7 @@ export default function Chapters(props: ChaptersProps) {
                         const style = idx === selectedIndex ? "bg-blue-200" : "";
                         return (
                             <div key={chapter.id} className="flex justify-between mt-2 mb-2">
-                                <div title={chapter.description} className={`text-black-800 w-full hover:text-red-800 inline2 ${style}`} onClick={() => { 
+                                <div title={chapter.description} className={`text-black-800 w-full hover:bg-blue-100 inline2 ${style}`} onClick={() => { 
                                     setSelectedIndex(idx);
                                     props.onChapterSelected?.(chapter)
                                 }}>{chapter.name}</div>
