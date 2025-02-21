@@ -91,14 +91,10 @@ export default function Questions(props: QuestionsProps) {
                 &lt;ADD&gt;
             </li>
             {questions.map((q, i) => {
-                let style = "w-full p-2 hover:bg-cyan-50";
-                if (i === index) {
-                    style = "w-full p-2 hover:bg-cyan-50 bg-cyan-50";
-                }
                 return (
                     <li key={i} className="my-2">
                         <div className="flex justify-between h-10 m-0">
-                            <p className={style} onClick={() => selectQuestionHandler(q, i)}>{q.question.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</p>
+                            <p className={`w-full p-2 hover:bg-blue-100 ${i===index ? "bg-blue-200": ""}`} onClick={() => selectQuestionHandler(q, i)}>{q.question.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</p>
                             <p className="p-2 w-9 bg-yellow-400 hover:bg-blue-200"
                                     onClick={() => {
                                             setEditingQuestion(q);

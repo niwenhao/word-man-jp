@@ -1,6 +1,6 @@
-
 interface JapaneseShowProps {
     content: string;
+    showRuby?: boolean;
     textStyle: string;
     rubyStyle: string;
 }
@@ -9,7 +9,7 @@ type ShowPart = {
     text: string;
     ruby: string;
 }
-export default function JapaneseShow(props: JapaneseShowProps) {
+export default function JapaneseShow({ content, showRuby, textStyle, rubyStyle }: JapaneseShowProps) {
     const parseContent = (content: string): ShowPart[] => {
         const regex = /\{([^\|]+)\|([^\}]+)\}/g;
         const result: ShowPart[] = [];
@@ -31,12 +31,13 @@ export default function JapaneseShow(props: JapaneseShowProps) {
         return result;
     };
 
-    const showParts = parseContent(props.content);
+    const showParts = parseContent(content);
     return (
         <>
             {showParts.map((part, index) => (
-                <ruby key={index} className={props.textStyle}>
-                    {part.text}<rt className={props.rubyStyle}>{part.ruby}</rt>
+                <ruby key={index} className={textStyle}>
+                    {part.text}
+                    { showRuby && <rt className={rubyStyle}>{part.ruby}</rt> }
                 </ruby>
             ))}
         </>

@@ -23,6 +23,7 @@ export default function Chapters(props: ChaptersProps) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editedChapter, setEditedChapter] = useState<Chapter>({ 
         id: 0, name: '', description: '', lastUpdate: new Date() });
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     type ChapterAction = { type: string, data: Chapter};
 
@@ -68,20 +69,22 @@ export default function Chapters(props: ChaptersProps) {
                                 setDialogOpen(true)
                             }} className=" text-black-800 hover:text-red-800 inline">ADD</p>
                     </div>
-                    {chapterList.map((chapter) => (
-                        <div key={chapter.id} className="flex justify-between mt-2 mb-2">
-                            <p title={chapter.description} className=" text-black-800 hover:text-red-800 inline" onClick={() => { 
-                                console.log(chapter);
-                                console.log(props.onChapterSelected);
-                                props.onChapterSelected?.(chapter)
-                            }}>{chapter.name}</p>
-                            <p className="inline w-5 text-2xl bg-yellow-200 hover:bg-blue-200 handle-pointer"
-                               onClick={() => {
-                                      setEditedChapter(chapter);
-                                      setDialogOpen(true);
-                               }}>✍</p>
-                        </div>
-                    ))}
+                    {chapterList.map((chapter, idx) => {
+                        const style = idx === selectedIndex ? "bg-blue-200" : "";
+                        return (
+                            <div key={chapter.id} className="flex justify-between mt-2 mb-2">
+                                <div title={chapter.description} className={`text-black-800 w-full hover:text-red-800 inline2 ${style}`} onClick={() => { 
+                                    setSelectedIndex(idx);
+                                    props.onChapterSelected?.(chapter)
+                                }}>{chapter.name}</div>
+                                <p className="inline w-5 text-2xl bg-yellow-200 hover:bg-blue-200 handle-pointer"
+                                onClick={() => {
+                                        setEditedChapter(chapter);
+                                        setDialogOpen(true);
+                                }}>✍</p>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         </div>

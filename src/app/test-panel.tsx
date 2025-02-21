@@ -17,17 +17,33 @@ export default function TestPanel({question, moveNext}: TestPanelProps) {
 
     const displayQuestion = () => {
         if (displayMode === 1) {
-            return <div className="h-40">{question.question.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</div>;
+            return (
+                <div className="h-40">
+                    <JapaneseShow content={question.question} textStyle={textStyle} rubyStyle={rubyStyle} showRuby={false} />
+                </div>
+            );
         } else {
-            return <div className="h-40"><JapaneseShow content={question.question} textStyle={textStyle} rubyStyle={rubyStyle}/></div>;
+            return (
+                <div className="h-40">
+                    <JapaneseShow content={question.question} textStyle={textStyle} rubyStyle={rubyStyle} showRuby={true} />
+                </div>
+            );
         }
     }
     
     const displayAnswer = () => {
         if (displayMode === 3) {
-            return <div className="h-40">{question.answer.replaceAll(/\{([^\}]+)\|[^\}]+\}/g, "$1")}</div>;
+            return (
+                <div className="h-40">
+                    <JapaneseShow content={question.answer} textStyle={textStyle} rubyStyle={rubyStyle} showRuby={false}/>
+                </div>
+            );
         } else if (displayMode === 4) {
-            return <div className="h-40"><JapaneseShow content={question.answer} textStyle={textStyle} rubyStyle={rubyStyle}/></div>;
+            return (
+                <div className="h-40">
+                    <JapaneseShow content={question.answer} textStyle={textStyle} rubyStyle={rubyStyle} showRuby={true}/>
+                </div>
+            );
         } else {
             return <div className="h-40"></div>;
         }

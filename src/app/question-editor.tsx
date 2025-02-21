@@ -60,6 +60,7 @@ export default function QuestionEditor(props: QuestionEditorProps) {
                 cols={50}
                 value={jsonInput}
                 onChange={handleJsonChange}
+                className="border-2 border-black"
             />
             <div>
                 <h3>Question:</h3>

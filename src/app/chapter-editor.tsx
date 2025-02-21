@@ -24,7 +24,7 @@ const ChapterEditor = ({ editChapter, saveChapter }: ChapterEditorProps) => {
             <div className='bg-blue-100 w-full'>
                 <label htmlFor="name">Name:</label>
                 <input
-                    className='w-full'
+                    className='w-full border-black border-2'
                     type="text"
                     id="name"
                     name="name"
@@ -35,7 +35,7 @@ const ChapterEditor = ({ editChapter, saveChapter }: ChapterEditorProps) => {
             <div className='bg-blue-100 w-full'>
                 <label htmlFor="description">Description:</label>
                 <textarea
-                    className='border-black w-full h-[10rem]'
+                    className='border-black border-2 w-full h-[10rem]'
                     id="description"
                     name="description"
                     value={chapter.description}
